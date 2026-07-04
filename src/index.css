@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 浅色主题 - 默认 (R G B 通道格式，支持透明度修饰符) */
+  --cm-bg: 250 247 242;
+  --cm-surface: 255 255 255;
+  --cm-card: 255 255 255;
+  --cm-card-alt: 245 240 232;
+  --cm-border: 232 224 212;
+  --cm-border-light: 240 235 227;
+  --cm-text: 45 36 24;
+  --cm-text-secondary: 107 93 77;
+  --cm-muted: 156 142 124;
+  --cm-accent: 196 112 63;
+  --cm-accent-light: 240 221 208;
+  --cm-accent-dark: 139 69 19;
+  --cm-green: 91 140 90;
+  --cm-green-light: 232 240 232;
+  --cm-purple: 123 107 165;
+  --cm-purple-light: 237 232 245;
+  --cm-amber: 196 154 63;
+  --cm-amber-light: 245 237 216;
+  --cm-red: 196 91 91;
+  --cm-blue: 91 126 168;
+  --cm-blue-light: 224 235 245;
+  --editor-font-size: 14px;
+
+  font-family: 'DM Sans', 'Noto Sans SC', sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 暗色主题 */
+.dark {
+  --cm-bg: 26 26 46;
+  --cm-surface: 22 33 62;
+  --cm-card: 22 33 62;
+  --cm-card-alt: 15 52 96;
+  --cm-border: 42 42 74;
+  --cm-border-light: 30 30 58;
+  --cm-text: 232 232 232;
+  --cm-text-secondary: 160 160 176;
+  --cm-muted: 107 107 128;
+  --cm-accent-light: 48 45 62;
+  --cm-green-light: 32 49 66;
+  --cm-purple-light: 37 44 77;
+  --cm-amber-light: 48 51 62;
+  --cm-blue-light: 32 47 78;
+  --cm-red: 224 96 96;
+}
+
+body {
+  background-color: rgb(var(--cm-bg));
+  color: rgb(var(--cm-text));
+  min-height: 100vh;
+}
+
+/* Custom scrollbar - warm beige style */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--cm-card-alt));
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--cm-border));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--cm-muted));
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgb(var(--cm-border));
+  border-radius: 2px;
+}
+
+/* Monaco editor overrides - uses CSS variables */
+.monaco-editor .margin,
+.monaco-editor-background,
+.monaco-editor .inputarea.ime-input {
+  background-color: rgb(var(--cm-bg)) !important;
+}
+
+/* Selection highlight */
+::selection {
+  background-color: rgb(var(--cm-accent-light));
+  color: rgb(var(--cm-text));
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid rgb(var(--cm-accent));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Mobile tap highlight */
+@media (hover: none) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Safe area padding for mobile */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

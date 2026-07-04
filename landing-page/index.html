@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeMentor AI — 你的 AI 编程私教</title>
+  <meta name="description" content="基于 Web 的 AI 编程学习平台。AI 定制学习路线、每日课程、项目拆解、代码练习场、考试与背记，让每一次学习都有反馈。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --surface: #ffffff;
+      --surface-2: #f5f2ee;
+      --primary: #b45309;
+      --primary-600: #d97706;
+      --primary-50: #fff7ed;
+      --text: #111827;
+      --text-2: #4b5563;
+      --text-3: #9ca3af;
+      --border: #e7e5e4;
+      --radius: 20px;
+      --radius-sm: 12px;
+      --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.06);
+      --shadow-lg: 0 24px 60px rgba(0,0,0,0.08);
+      --max: 1160px;
+      --font: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .container { width: min(92%, var(--max)); margin: 0 auto; }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(250,248,245,0.86);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(231,229,228,0.6);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+    .logo-mark {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      object-fit: contain;
+      display: block;
+      background: var(--surface);
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-2);
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--text);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 26px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 15px;
+      transition: transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(180,83,9,0.22);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(180,83,9,0.28); }
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+    .btn:disabled, .btn[aria-disabled="true"] {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .btn:disabled:hover, .btn[aria-disabled="true"]:hover { transform: none; }
+
+    /* Hero */
+    .hero {
+      padding: 96px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--primary-50);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: clamp(38px, 5vw, 62px);
+      line-height: 1.08;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin: 0 0 22px;
+    }
+    h1 .grad {
+      background: linear-gradient(135deg, var(--primary), var(--primary-600));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .lead {
+      font-size: 18px;
+      color: var(--text-2);
+      max-width: 540px;
+      margin: 0 0 32px;
+      line-height: 1.7;
+    }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .hero-meta {
+      display: flex;
+      gap: 22px;
+      margin-top: 34px;
+      font-size: 13px;
+      color: var(--text-3);
+      flex-wrap: wrap;
+    }
+    .hero-meta span { display: flex; align-items: center; gap: 6px; }
+    .hero-meta .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--primary-600);
+    }
+
+    .hero-shot {
+      position: relative;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      background: var(--surface);
+      padding: 10px;
+      transform: perspective(1200px) rotateY(-6deg) rotateX(4deg);
+      transition: transform .6s ease;
+    }
+    .hero-shot:hover { transform: perspective(1200px) rotateY(-2deg) rotateX(1deg); }
+    .hero-shot img {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+    .hero-shot::before {
+      content: '';
+      position: absolute;
+      inset: -60px;
+      background: radial-gradient(circle at 50% 50%, rgba(217,119,6,0.12), transparent 60%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-shot { transform: none; max-width: 720px; margin: 0 auto; }
+      .hero { padding-top: 64px; }
+    }
+
+    /* Sections */
+    section { padding: 100px 0; }
+    .sec-head { text-align: center; max-width: 680px; margin: 0 auto 64px; }
+    .sec-head h2 {
+      font-size: clamp(28px, 3.4vw, 40px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 14px 0 16px;
+    }
+    .sec-head p {
+      font-size: 17px;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    /* Pain points / Value */
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+    .value-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+    .value-card h3 { font-size: 18px; margin: 16px 0 10px; }
+    .value-card p { font-size: 14px; color: var(--text-2); margin: 0; line-height: 1.7; }
+    .value-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--primary-50);
+      color: var(--primary);
+      display: grid; place-items: center;
+    }
+    @media (max-width: 860px) {
+      .value-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Feature sections */
+    .feature {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      margin-bottom: 120px;
+    }
+    .feature:last-child { margin-bottom: 0; }
+    .feature.reverse { direction: rtl; }
+    .feature.reverse > * { direction: ltr; }
+    .feature-shot {
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 10px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+    .feature-shot img { border-radius: 14px; border: 1px solid var(--border); }
+    .feature-text h3 {
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 16px;
+    }
+    .feature-text p { color: var(--text-2); font-size: 16px; line-height: 1.8; margin: 0 0 20px; }
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+    .feature-list .check {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--primary-50);
+      color: var(--primary);
+      display: grid; place-items: center;
+      font-size: 11px; flex-shrink: 0;
+      margin-top: 2px;
+    }
+    @media (max-width: 860px) {
+      .feature { grid-template-columns: 1fr; gap: 36px; margin-bottom: 80px; }
+      .feature.reverse { direction: ltr; }
+    }
+
+    /* Gallery */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .gallery-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .gallery-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .gallery-card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; object-position: top; border-bottom: 1px solid var(--border); }
+    .gallery-card span {
+      display: block;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+    @media (max-width: 980px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .gallery { grid-template-columns: 1fr; } }
+
+    /* Support chips */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      max-width: 840px;
+      margin: 0 auto;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-2);
+    }
+    .chip img { width: 16px; height: 16px; }
+
+    /* CTA / Start */
+    .start {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 64px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .start h2 { font-size: 32px; font-weight: 800; margin: 0 0 16px; letter-spacing: -0.02em; }
+    .start p { color: var(--text-2); margin: 0 0 26px; line-height: 1.7; }
+    .start-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .code-block {
+      background: #1c1917;
+      border-radius: var(--radius-sm);
+      padding: 22px;
+      color: #e7e5e4;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .code-block .comment { color: #a8a29e; }
+    .code-block .cmd { color: #fdba74; }
+    @media (max-width: 860px) {
+      .start { grid-template-columns: 1fr; padding: 36px; }
+    }
+
+    /* Footer */
+    footer {
+      padding: 56px 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-2);
+      font-size: 14px;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--text); }
+
+    /* Reveal animation */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a class="logo" href="#">
+      <img class="logo-mark" src="./favicon.svg" alt="" />
+      CodeMentor AI
+    </a>
+    <div class="nav-links">
+      <a href="#features">功能</a>
+      <a href="#screenshots">界面</a>
+      <a href="#support">支持</a>
+      <a href="#start">开始</a>
+    </div>
+    <span class="nav-cta" aria-disabled="true">即将上线</span>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <div class="eyebrow">AI 编程私教 · 本地优先</div>
+      <h1>跟着 AI <span class="grad">动手写代码</span>，而不是只看视频</h1>
+      <p class="lead">CodeMentor AI 是一款基于 Web 的 AI 编程学习平台。它会根据你的基础、目标和时间，定制全年学习路线，每天带你学一节课、做一个练习；你还能把感兴趣的开源项目丢给它，让 AI 一步步拆解代码是怎么写出来的。</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" aria-disabled="true" disabled>下载客户端</button>
+        <button class="btn btn-ghost" aria-disabled="true" disabled>查看源码</button>
+      </div>
+      <div class="hero-meta">
+        <span><span class="dot"></span> 开源免费</span>
+        <span><span class="dot"></span> 14 家 AI 模型接入</span>
+        <span><span class="dot"></span> 15 门编程语言</span>
+        <span><span class="dot"></span> 数据仅存本地</span>
+      </div>
+    </div>
+    <div class="hero-shot reveal">
+      <img src="screenshots/dashboard.png" alt="CodeMentor AI 仪表盘" />
+    </div>
+  </div>
+</header>
+
+<section id="value">
+  <div class="container">
+    <div class="sec-head reveal">
+      <h2>学习编程的痛点，我们一个一个解决</h2>
+      <p>传统课程千人一面、遇到问题无人即时解答、学完缺少实战反馈、想分析开源项目却无从下手。CodeMentor AI 把这些问题变成一个完整的学习闭环。</p>
+    </div>
+    <div class="value-grid">
+      <div class="value-card reveal">
+        <div class="value-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>个性化学习路线</h3>
+        <p>告诉 AI 你的基础、目标语言和每天能学多久，它会生成按月拆分的 30 天学习路线，每天内容都不重样。</p>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>随时 AI 答疑</h3>
+        <p>学习中遇到问题随时问。解释代码、逐行注释、Debug、生成测试、优化重构，快捷指令一点就有。</p>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h3>考试与背记</h3>
+        <p>学完立刻用阶段/月度考试检验成果，AI 自动判分并给出改进建议；考前用背记卡片快速复习重点。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div class="sec-head reveal">
+      <h2>从制定计划到项目实战，全部在一个平台完成</h2>
+      <p>下面每个界面都来自 CodeMentor AI 的真实运行截图，不是设计稿、不是占位图。</p>
+    </div>
+
+    <div class="feature reveal">
+      <div class="feature-text">
+        <h3>AI 定制学习路线，每天一节小课</h3>
+        <p>选择一门语言，填写你的背景和每天可用时间，AI 会生成 30 天一月的学习路线。每张卡片就是一天的课程，完成当天后自动解锁下一天，月度考试会在你完成整月课程后开放。</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> 按月规划，目标清晰</li>
+          <li><span class="check">✓</span> 每天 15–120 分钟弹性安排</li>
+          <li><span class="check">✓</span> 课程状态自动同步到本地</li>
+        </ul>
+      </div>
+      <div class="feature-shot"><img src="screenshots/learning-path.png" alt="学习路径" /></div>
+    </div>
+
+    <div class="feature reverse reveal">
+      <div class="feature-text">
+        <h3>每日课程：知识点 + 练习 + 本地运行</h3>
+        <p>每天课程由 AI 动态生成，包含讲解、代码示例和课后练习。你可以在代码练习场直接运行代码，实时看到结果，验证自己是否真正掌握。</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> 知识点与代码示例结合</li>
+          <li><span class="check">✓</span> 支持 Python / JS / TS / Go / Rust 等运行</li>
+          <li><span class="check">✓</span> 完成后打卡并累计经验值</li>
+        </ul>
+      </div>
+      <div class="feature-shot"><img src="screenshots/daily-lesson.png" alt="每日课程" /></div>
+    </div>
+
+    <div class="feature reveal">
+      <div class="feature-text">
+        <h3>项目逆向学习：把开源项目拆成步骤</h3>
+        <p>上传任意项目文件夹，AI 自动识别技术栈、生成全景分析报告，并把项目拆成多个「从零构建」步骤。每一步都告诉你目标、给出原始代码、讲解关键点，让你真正看懂项目是怎么做出来的。</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> 自动识别技术栈与目录结构</li>
+          <li><span class="check">✓</span> 全景分析 + 分步拆解</li>
+          <li><span class="check">✓</span> 任务队列实时跟踪进度</li>
+        </ul>
+      </div>
+      <div class="feature-shot"><img src="screenshots/project-analysis.png" alt="项目分析" /></div>
+    </div>
+
+    <div class="feature reverse reveal">
+      <div class="feature-text">
+        <h3>AI 对话：多模型 + 快捷指令</h3>
+        <p>接入 14 家国内外模型厂商，你可以自由选择。对话支持快捷指令，解释、注释、Debug、测试、重构一键发起，所有会话历史都会保存。</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> 14 家模型厂商可选</li>
+          <li><span class="check">✓</span> 流式响应，体验顺滑</li>
+          <li><span class="check">✓</span> 会话历史长期保存</li>
+        </ul>
+      </div>
+      <div class="feature-shot"><img src="screenshots/ai-chat.png" alt="AI 对话" /></div>
+    </div>
+
+    <div class="feature reveal">
+      <div class="feature-text">
+        <h3>考试、背记与成就，学习有反馈</h3>
+        <p>阶段考试和月度考试帮你检验学习成果；上传资料后 AI 自动生成背记卡片；成就系统记录你的连续打卡、累计经验等里程碑，让坚持变得可视化。</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> 阶段 / 月度双考试模式</li>
+          <li><span class="check">✓</span> AI 制卡 + 翻转复习</li>
+          <li><span class="check">✓</span> 徽章与进度可视化</li>
+        </ul>
+      </div>
+      <div class="feature-shot"><img src="screenshots/exam.png" alt="考试系统" /></div>
+    </div>
+  </div>
+</section>
+
+<section id="screenshots" style="background: var(--surface-2);">
+  <div class="container">
+    <div class="sec-head reveal">
+      <h2>全部真实界面一览</h2>
+      <p>以下截图均直接来自 CodeMentor AI 运行实例。</p>
+    </div>
+    <div class="gallery">
+      <div class="gallery-card reveal"><img src="screenshots/dashboard.png" alt="仪表盘" /><span>仪表盘</span></div>
+      <div class="gallery-card reveal"><img src="screenshots/learning-path.png" alt="学习路径" /><span>学习路径</span></div>
+      <div class="gallery-card reveal"><img src="screenshots/daily-lesson.png" alt="每日课程" /><span>每日课程</span></div>
+      <div class="gallery-card reveal"><img src="screenshots/project-analysis.png" alt="项目分析" /><span>项目分析</span></div>
+      <div class="gallery-card reveal"><img src="screenshots/ai-chat.png" alt="AI 对话" /><span>AI 对话</span></div>
+      <div class="gallery-card reveal"><img src="screenshots/exam.png" alt="考试系统" /><span>考试系统</span></div>
+      <div class="gallery-card reveal"><img src="screenshots/memorize.png" alt="考前速记" /><span>考前速记</span></div>
+      <div class="gallery-card reveal"><img src="screenshots/playground.png" alt="代码练习场" /><span>代码练习场</span></div>
+      <div class="gallery-card reveal"><img src="screenshots/achievements.png" alt="学习成就" /><span>学习成就</span></div>
+      <div class="gallery-card reveal"><img src="screenshots/settings.png" alt="设置" /><span>设置中心</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="support">
+  <div class="container">
+    <div class="sec-head reveal">
+      <h2>支持 14 家 AI 模型与 15 门编程语言</h2>
+      <p>自由选择你喜欢的模型厂商和想学的语言，数据与配置都保存在本地。</p>
+    </div>
+    <div class="chips reveal">
+      <span class="chip"><img src="icons/providers/openai.svg" alt="" /> OpenAI</span>
+      <span class="chip"><img src="icons/providers/anthropic.svg" alt="" /> Anthropic</span>
+      <span class="chip"><img src="icons/providers/deepseek.svg" alt="" /> DeepSeek</span>
+      <span class="chip"><img src="icons/providers/qwen.svg" alt="" /> 通义千问</span>
+      <span class="chip"><img src="icons/providers/wenxin.svg" alt="" /> 文心一言</span>
+      <span class="chip"><img src="icons/providers/zhipu.svg" alt="" /> 智谱 GLM</span>
+      <span class="chip"><img src="icons/providers/moonshot.svg" alt="" /> Kimi</span>
+      <span class="chip"><img src="icons/providers/yi.svg" alt="" /> Yi</span>
+      <span class="chip"><img src="icons/providers/doubao.svg" alt="" /> 豆包</span>
+      <span class="chip"><img src="icons/providers/siliconflow.svg" alt="" /> SiliconFlow</span>
+      <span class="chip"><img src="icons/providers/google.svg" alt="" /> Gemini</span>
+      <span class="chip"><img src="icons/providers/groq.svg" alt="" /> Groq</span>
+      <span class="chip"><img src="icons/providers/ollama.svg" alt="" /> Ollama 本地</span>
+      <span class="chip"><img src="icons/providers/custom.svg" alt="" /> 自定义接口</span>
+    </div>
+    <div class="chips reveal" style="margin-top: 14px;">
+      <span class="chip"><img src="icons/languages/python.svg" alt="" /> Python</span>
+      <span class="chip"><img src="icons/languages/javascript.svg" alt="" /> JavaScript</span>
+      <span class="chip"><img src="icons/languages/typescript.svg" alt="" /> TypeScript</span>
+      <span class="chip"><img src="icons/languages/java.svg" alt="" /> Java</span>
+      <span class="chip"><img src="icons/languages/go.svg" alt="" /> Go</span>
+      <span class="chip"><img src="icons/languages/rust.svg" alt="" /> Rust</span>
+      <span class="chip"><img src="icons/languages/c.svg" alt="" /> C</span>
+      <span class="chip"><img src="icons/languages/cpp.svg" alt="" /> C++</span>
+      <span class="chip"><img src="icons/languages/csharp.svg" alt="" /> C#</span>
+      <span class="chip"><img src="icons/languages/swift.svg" alt="" /> Swift</span>
+      <span class="chip"><img src="icons/languages/kotlin.svg" alt="" /> Kotlin</span>
+      <span class="chip"><img src="icons/languages/ruby.svg" alt="" /> Ruby</span>
+      <span class="chip"><img src="icons/languages/php.svg" alt="" /> PHP</span>
+      <span class="chip"><img src="icons/languages/sql.svg" alt="" /> SQL</span>
+      <span class="chip"><img src="icons/languages/other.svg" alt="" /> 其他</span>
+    </div>
+  </div>
+</section>
+
+<section id="start">
+  <div class="container">
+    <div class="start reveal">
+      <div>
+        <h2>本地运行，完全掌控你的数据</h2>
+        <p>CodeMentor AI 是开源项目。克隆仓库后一键启动前端和本地后端，API Key、学习记录、项目文件全部保存在你的电脑上。</p>
+        <div class="start-btns">
+          <button class="btn btn-primary" aria-disabled="true" disabled>下载客户端</button>
+          <button class="btn btn-ghost" aria-disabled="true" disabled>查看源码</button>
+        </div>
+      </div>
+      <div class="code-block">
+        <div><span class="comment"># 克隆并启动</span></div>
+        <div><span class="cmd">git clone</span> &lt;仓库地址&gt;</div>
+        <div><span class="cmd">cd</span> CodeMentor-AI</div>
+        <div><span class="cmd">npm install</span></div>
+        <div><span class="cmd">npm run dev:all</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <img class="logo-mark" src="./favicon.svg" alt="" />
+      CodeMentor AI
+    </div>
+    <div>© 2026 CodeMentor AI. 开源项目，仅供学习交流。</div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
