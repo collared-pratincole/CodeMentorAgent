@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
 import MainLayout from '@/components/layout/MainLayout'
 import SetupWizard from '@/components/common/SetupWizard'
 import Dashboard from '@/pages/Dashboard'
@@ -50,8 +49,6 @@ export default function App() {
   const { currentUserId, dataLoaded, selectUser } = useUserStore()
   // 标记本次页面会话是否已执行过启动同步（避免依赖 dataLoaded 导致刷新时不触发合并）
   const initSyncedRef = useRef(false)
-  // 每次进入应用时显示欢迎弹窗（同一页面会话只显示一次，刷新/重开标签页会再次显示）
-  const [showWelcome, setShowWelcome] = useState(() => !sessionStorage.getItem('cm_welcome_shown'))
 
   // 启动时同步全局用户 ID，供 chat store 防抖同步使用
   useEffect(() => {
@@ -125,11 +122,6 @@ export default function App() {
     return <SetupWizard />
   }
 
-  const closeWelcome = () => {
-    sessionStorage.setItem('cm_welcome_shown', '1')
-    setShowWelcome(false)
-  }
-
   return (
     <>
       <BrowserRouter>
@@ -151,38 +143,6 @@ export default function App() {
           </Route>
         </Routes>
       </BrowserRouter>
-
-      {/* 进入应用时的欢迎弹窗 */}
-      <AnimatePresence>
-        {showWelcome && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
-            onClick={closeWelcome}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 10 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 10 }}
-              className="w-full max-w-md rounded-2xl bg-cm-card p-6 shadow-soft-lg text-center"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-cm-accent-light mb-4">
-                <span className="text-2xl">👋</span>
-              </div>
-              <p className="text-sm leading-relaxed text-cm-text-secondary">
-                裁判你好。这个项目里留了一个 DeepSeek 的 API key，截止到你看到的时候，应该还剩 9 块 5 毛左右。
-              </p>
-              <button
-                onClick={closeWelcome}
-                className="mt-5 w-full rounded-xl bg-cm-accent px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-              >
-                知道了
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   )
 }
